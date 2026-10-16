@@ -9,7 +9,16 @@
   <style>
     .app[hidden] { display: none !important; }
     body.auth-open .app { display: none !important; }
-    .auth-shell { position: fixed !important; inset: 0; z-index: 10000; }
+    .auth-shell { position: fixed !important; inset: 0; z-index: 10000; display:flex; align-items:center; justify-content:center; background:linear-gradient(145deg,#060527 0%,#1a1a4e 50%,#0f172a 100%); min-height:100vh; padding:24px; }
+    .auth-card { background:#fff; border-radius:16px; padding:32px 28px; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+    .auth-card h1 { margin:0 0 8px; font-size:1.5rem; color:#060527; }
+    .auth-hint { color:#64748b; font-size:13px; margin-bottom:20px; line-height:1.45; }
+    .auth-form label { display:block; font-size:12px; font-weight:600; color:#334155; margin:12px 0 4px; }
+    .auth-form input, .auth-form select { width:100%; padding:11px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px; box-sizing:border-box; }
+    .auth-form input:focus, .auth-form select:focus { outline:none; border-color:#3B5BDB; box-shadow:0 0 0 3px rgba(59,91,219,.15); }
+    .auth-btn { width:100%; margin-top:18px; padding:12px; font-weight:600; }
+    .brand-logo-img { height:40px; margin-bottom:12px; }
+    .nav-item[data-view="approvals"]:not([hidden]) { display:flex !important; }
   </style>
 </head>
 <body>
@@ -102,7 +111,7 @@
         <button class="nav-item" data-view="team"><span class="nav-icon">&#9675;</span> Team</button>
         <button class="nav-item" data-view="templates"><span class="nav-icon">&#9993;</span> Templates</button>
         <button class="nav-item" data-view="notifications"><span class="nav-icon">&#128276;</span> Notifications</button>
-        <button class="nav-item" data-view="approvals" id="navApprovals" hidden><span class="nav-icon">&#10003;</span> Approvals <span class="nav-badge" id="navPendingCount">0</span></button>
+        <button class="nav-item" data-view="approvals" id="navApprovals"><span class="nav-icon">&#10003;</span> Approvals <span class="nav-badge" id="navPendingCount">0</span></button>
         <button class="nav-item" data-view="my-work"><span class="nav-icon">&#9733;</span> My Work</button>
         <button class="nav-item" data-view="admin" id="navAdmin" hidden><span class="nav-icon">&#9960;</span> Admin Panel</button>
         <button class="nav-item" data-view="settings"><span class="nav-icon">&#9881;</span> Settings</button>
@@ -116,7 +125,7 @@
           </div>
           <button class="btn btn-sm btn-ghost" id="btnLogout">Out</button>
         </div>
-        <div class="version">Portal v3.2</div>
+        <div class="version">Portal v3.3</div>
       </div>
     </aside>
     <main class="main">
@@ -164,5 +173,6 @@
   </script>
   <script src="app.js"></script>
   <script src="app-extensions.js"></script>
+  <script src="portal-repair.js"></script>
 </body>
 </html>
