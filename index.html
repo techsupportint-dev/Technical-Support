@@ -6,6 +6,11 @@
   <title>Credlock Africa | Tech Support Portal</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    .app[hidden] { display: none !important; }
+    body.auth-open .app { display: none !important; }
+    .auth-shell { position: fixed !important; inset: 0; z-index: 10000; }
+  </style>
 </head>
 <body>
   <div id="authShell" class="auth-shell">
@@ -14,10 +19,10 @@
         <img class="brand-logo-img" src="https://credlockng.com/brand/credlock-logo.png" alt="Credlock" />
       </div>
       <h1>Sign in</h1>
-      <p class="auth-hint">Tech Support Operations Portal</p>
+      <p class="auth-hint">Tech Support Operations Portal<br><small>Team Lead: techsupport.int@gmail.com · PIN 6424</small></p>
       <form class="auth-form" id="loginForm">
         <label>Email</label>
-        <input name="email" type="email" required placeholder="you@credlock.africa" autocomplete="username" />
+        <input name="email" type="email" required placeholder="techsupport.int@gmail.com" autocomplete="username" />
         <label>PIN</label>
         <input name="pin" type="password" inputmode="numeric" required placeholder="4-6 digit PIN" autocomplete="current-password" />
         <button class="btn btn-primary auth-btn" type="submit">Sign in</button>
@@ -50,12 +55,12 @@
     </div>
     <div class="auth-card" id="authReset" hidden>
       <h1>Reset PIN</h1>
-      <p class="auth-hint">Request a token from Team Lead, then set a new PIN.</p>
+      <p class="auth-hint">Submit email only first to request a token. Then enter token + new PIN.</p>
       <form class="auth-form" id="resetForm">
         <label>Email</label>
         <input name="email" type="email" required />
-        <label>Reset token</label>
-        <input name="token" />
+        <label>Reset token (from Team Lead)</label>
+        <input name="token" placeholder="Leave blank to request" />
         <label>New PIN</label>
         <input name="pin" type="password" inputmode="numeric" />
         <label>Confirm PIN</label>
@@ -92,7 +97,7 @@
         <button class="nav-item" data-view="officer-reports"><span class="nav-icon">&#8681;</span> Officer Reports</button>
         <button class="nav-item" data-view="analytics"><span class="nav-icon">&#9673;</span> Analytics</button>
         <button class="nav-item" data-view="ai-insights"><span class="nav-icon">&#10022;</span> AI Insights</button>
-        <div class="nav-section">Team &amp; Tools</div>
+        <div class="nav-section">Team & Tools</div>
         <button class="nav-item" data-view="team"><span class="nav-icon">&#9675;</span> Team</button>
         <button class="nav-item" data-view="templates"><span class="nav-icon">&#9993;</span> Templates</button>
         <button class="nav-item" data-view="notifications"><span class="nav-icon">&#128276;</span> Notifications</button>
@@ -131,8 +136,10 @@
   <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
-      <div class="modal-header"><div class="modal-title" id="modalTitle">Modal</div>
-        <button class="btn btn-sm btn-ghost" onclick="closeModal()">X</button></div>
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Modal</div>
+        <button class="btn btn-sm btn-ghost" id="modalClose" type="button" onclick="typeof closeModal==='function'&&closeModal()">&times;</button>
+      </div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer" id="modalFooter"></div>
     </div>
@@ -142,6 +149,20 @@
   <script src="auth.js"></script>
   <script src="kavro_data.js"></script>
   <script src="api.js"></script>
+  <script>
+  /* Safety stubs so app.js never crashes on missing nodes */
+  (function () {
+    ['menuToggle','quickNewBtn','modalClose','modalBackdrop','exportBtn','syncBtn'].forEach(function (id) {
+      if (!document.getElementById(id)) {
+        var el = document.createElement('button');
+        el.id = id;
+        el.type = 'button';
+        el.style.display = 'none';
+        document.body.appendChild(el);
+      }
+    });
+  })();
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
