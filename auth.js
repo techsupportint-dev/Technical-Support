@@ -105,17 +105,22 @@
     var email = (opts.email || '').trim().toLowerCase();
     var name = (opts.name || '').trim();
     var pin = String(opts.pin || '').trim();
-    var role = opts.role === 'lead' || opts.role === 'admin' ? opts.role : 'officer';
+    var role = opts.role === 'viewer' ? 'viewer' : 'officer';
     if (!name || !email || !pin) throw new Error('All fields required');
     if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN must be 4-6 digits');
     var users = loadUsers();
     if (users.find(function (u) { return u.email === email; })) throw new Error('Email already registered');
     users.push({
-      id: 'u-' + Date.now().toString(36), name: name, email: email, role: role, pin: pin,
-      status: 'pending', permissions: defaultPerms(role === 'lead' || role === 'admin' ? 'lead' : 'officer'),
-      createdAt: new Date().toISOString(), approvedAt: null, approvedBy: null
+      id: 'u-' + Date.now().toString(36),
+      name: name, email: email, role: role, pin: pin,
+      status: 'pending',
+      permissions: defaultPerms(role),
+      createdAt: new Date().toISOString(),
+      approvedAt: null,
+      approvedBy: null
     });
     saveUsers(users);
+    try { localStorage.setItem('credlock_ts_pending_ping', String(Date.now())); } catch (e) {}
     return true;
   }
 
@@ -141,14 +146,18 @@
     if (!u) throw new Error('User not found');
     u.status = 'approved'; u.approvedAt = new Date().toISOString(); u.approvedBy = leadName || 'Team Lead';
     if (!u.permissions) u.permissions = defaultPerms(u.role);
-    saveUsers(users); return u;
+    saveUsers(users);
+    refreshApprovalsBadge();
+    return u;
   }
   function rejectUser(userId, leadName) {
     var users = loadUsers();
     var u = users.find(function (x) { return x.id === userId; });
     if (!u) throw new Error('User not found');
     u.status = 'rejected'; u.approvedBy = leadName || 'Team Lead';
-    saveUsers(users); return u;
+    saveUsers(users);
+    refreshApprovalsBadge();
+    return u;
   }
   function updateUser(userId, patch) {
     var users = loadUsers();
@@ -185,6 +194,7 @@
       var t = 'RST-' + Math.random().toString(36).slice(2, 10).toUpperCase();
       resets.push({ email: email, token: t, createdAt: new Date().toISOString(), used: false });
       saveResets(resets);
+      refreshApprovalsBadge();
       return { message: 'Reset requested. Ask Team Lead for token, then submit again with token + new PIN.' };
     }
     var resets2 = loadResets();
@@ -193,6 +203,7 @@
     if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN must be 4-6 digits');
     user.pin = pin; req.used = true;
     saveUsers(users); saveResets(resets2);
+    refreshApprovalsBadge();
     return { message: 'PIN updated. You can sign in.' };
   }
   function issueResetToken(email, leadName) {
@@ -201,7 +212,9 @@
     var resets = loadResets();
     var t = 'RST-' + Math.random().toString(36).slice(2, 10).toUpperCase();
     resets.push({ email: email, token: t, createdAt: new Date().toISOString(), used: false, issuedBy: leadName });
-    saveResets(resets); return t;
+    saveResets(resets);
+    refreshApprovalsBadge();
+    return t;
   }
   function openResets() { return loadResets().filter(function (r) { return !r.used; }); }
 
@@ -233,25 +246,60 @@
     }
     document.body.classList.toggle('auth-open', !!show);
   }
+
+  function refreshApprovalsBadge() {
+    var badge = document.getElementById('navPendingCount');
+    var n = pendingUsers().length + openResets().length;
+    if (badge) {
+      badge.textContent = String(n);
+      badge.style.display = n > 0 ? 'inline-block' : 'none';
+      if (n > 0) badge.style.background = '#DC2626';
+    }
+    return n;
+  }
+
   function applyNavPermissions() {
     var s = getSession();
     document.querySelectorAll('.nav-item[data-view]').forEach(function (btn) {
       var view = btn.getAttribute('data-view');
-      if (!s) { btn.hidden = true; return; }
-      btn.hidden = !can(view === 'admin' ? 'admin' : view);
+      if (!s) {
+        btn.hidden = true;
+        btn.style.display = 'none';
+        return;
+      }
+      var allowed = can(view === 'admin' ? 'admin' : view);
+      if (s.role === 'lead' || s.role === 'admin') {
+        if (view === 'approvals' || view === 'lead-dash' || view === 'admin') allowed = true;
+      }
+      btn.hidden = !allowed;
+      btn.style.display = allowed ? '' : 'none';
     });
     var navAppr = document.getElementById('navApprovals');
     var navLead = document.getElementById('navLeadDash');
     var navAdmin = document.getElementById('navAdmin');
+    var lead = s && (s.role === 'lead' || s.role === 'admin');
     if (navAppr) {
-      navAppr.hidden = !can('approvals');
-      var badge = document.getElementById('navPendingCount');
-      var n = pendingUsers().length + openResets().length;
-      if (badge) { badge.textContent = n; badge.style.display = n ? 'inline-block' : 'none'; }
+      if (lead || can('approvals')) {
+        navAppr.hidden = false;
+        navAppr.removeAttribute('hidden');
+        navAppr.style.display = '';
+        navAppr.style.visibility = 'visible';
+      } else {
+        navAppr.hidden = true;
+        navAppr.style.display = 'none';
+      }
+      refreshApprovalsBadge();
     }
-    if (navLead) navLead.hidden = !can('lead-dash');
-    if (navAdmin) navAdmin.hidden = !can('admin');
+    if (navLead) {
+      navLead.hidden = !(lead || can('lead-dash'));
+      if (!navLead.hidden) { navLead.removeAttribute('hidden'); navLead.style.display = ''; }
+    }
+    if (navAdmin) {
+      navAdmin.hidden = !(lead || can('admin'));
+      if (!navAdmin.hidden) { navAdmin.removeAttribute('hidden'); navAdmin.style.display = ''; }
+    }
   }
+
   function updateUserBar() {
     var s = getSession();
     if (!s) return;
@@ -286,7 +334,10 @@
         var err = document.getElementById('loginError');
         try {
           var user = login(fd.get('email'), fd.get('pin'));
-          showAuth(false); updateUserBar();
+          showAuth(false);
+          updateUserBar();
+          applyNavPermissions();
+          setTimeout(applyNavPermissions, 150);
           if (typeof global.afterAuthLogin === 'function') global.afterAuthLogin(user);
         } catch (ex) { if (err) err.textContent = ex.message; }
       });
@@ -302,8 +353,11 @@
         try {
           if (String(fd.get('pin')) !== String(fd.get('pin2'))) throw new Error('PINs do not match');
           register({ name: fd.get('name'), email: fd.get('email'), role: fd.get('role'), pin: fd.get('pin') });
-          if (ok) ok.textContent = 'Submitted. Wait for Team Lead approval, then sign in.';
+          if (ok) ok.textContent = 'Submitted for approval. Team Lead: open Approvals in the sidebar (same browser) to approve.';
           regForm.reset();
+          if (window.TSApi && TSApi.getApiUrl && TSApi.getApiUrl() && TSApi.registerUser) {
+            TSApi.registerUser({ name: fd.get('name'), email: fd.get('email'), role: fd.get('role'), pin: fd.get('pin') }).catch(function () {});
+          }
         } catch (ex) { if (err) err.textContent = ex.message; }
       });
     }
@@ -337,7 +391,7 @@
     if (s) {
       var full = loadUsers().find(function (u) { return u.id === s.id; });
       if (full && full.status === 'approved') {
-        setSession(full); showAuth(false); updateUserBar();
+        setSession(full); showAuth(false); updateUserBar(); applyNavPermissions();
         return Promise.resolve(full);
       }
       logout();
@@ -352,6 +406,7 @@
     updateUser: updateUser, setUserPermissions: setUserPermissions, pendingUsers: pendingUsers,
     loadUsers: loadUsers, issueResetToken: issueResetToken, openResets: openResets,
     updateUserBar: updateUserBar, applyNavPermissions: applyNavPermissions, showAuth: showAuth,
+    refreshApprovalsBadge: refreshApprovalsBadge,
     getSession: getSession, ALL_PERMS: ALL_PERMS, ROLE_PRESETS: ROLE_PRESETS, defaultPerms: defaultPerms,
     ensureSeed: ensureSeed
   };
@@ -360,6 +415,14 @@
     try {
       ensureSeed();
       bindAuthForms();
+      window.addEventListener('storage', function (ev) {
+        if (ev.key === 'credlock_ts_users_v1' || ev.key === 'credlock_ts_pending_ping') {
+          applyNavPermissions();
+        }
+      });
+      setInterval(function () {
+        if (getSession() && (isLead() || can('approvals'))) refreshApprovalsBadge();
+      }, 4000);
       window.__credlockAuthReady = true;
     } catch (e) {
       console.error('Auth init error', e);
