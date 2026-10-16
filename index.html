@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credlock Africa | Tech Support Portal</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="authShell" class="auth-shell">
+    <div class="auth-card" id="authLogin">
+      <div class="auth-brand">
+        <img class="brand-logo-img" src="https://credlockng.com/brand/credlock-logo.png" alt="Credlock" />
+      </div>
+      <h1>Sign in</h1>
+      <p class="auth-hint">Tech Support Operations Portal</p>
+      <form class="auth-form" id="loginForm">
+        <label>Email</label>
+        <input name="email" type="email" required placeholder="you@credlock.africa" autocomplete="username" />
+        <label>PIN</label>
+        <input name="pin" type="password" inputmode="numeric" required placeholder="4–6 digit PIN" autocomplete="current-password" />
+        <button class="btn btn-primary auth-btn" type="submit">Sign in</button>
+        <div class="auth-error" id="loginError"></div>
+      </form>
+      <div class="auth-links">
+        <a href="#" data-auth="register">Register</a>
+        <a href="#" data-auth="reset">Forgot PIN</a>
+      </div>
+    </div>
+    <div class="auth-card" id="authRegister" hidden>
+      <h1>Register</h1>
+      <p class="auth-hint">Team Lead must approve before you can sign in.</p>
+      <form class="auth-form" id="registerForm">
+        <label>Full name</label>
+        <input name="name" required />
+        <label>Email</label>
+        <input name="email" type="email" required />
+        <label>Role</label>
+        <select name="role"><option value="officer">Support Officer</option><option value="viewer">Viewer</option></select>
+        <label>PIN (4–6 digits)</label>
+        <input name="pin" type="password" inputmode="numeric" required />
+        <label>Confirm PIN</label>
+        <input name="pin2" type="password" inputmode="numeric" required />
+        <button class="btn btn-primary auth-btn" type="submit">Submit registration</button>
+        <div class="auth-error" id="registerError"></div>
+        <div class="auth-ok" id="registerOk"></div>
+      </form>
+      <div class="auth-links"><a href="#" data-auth="login">Back to sign in</a></div>
+    </div>
+    <div class="auth-card" id="authReset" hidden>
+      <h1>Reset PIN</h1>
+      <p class="auth-hint">Request a token from Team Lead, then set a new PIN.</p>
+      <form class="auth-form" id="resetForm">
+        <label>Email</label>
+        <input name="email" type="email" required />
+        <label>Reset token (from Team Lead)</label>
+        <input name="token" placeholder="Optional on first request" />
+        <label>New PIN</label>
+        <input name="pin" type="password" inputmode="numeric" />
+        <label>Confirm PIN</label>
+        <input name="pin2" type="password" inputmode="numeric" />
+        <button class="btn btn-primary auth-btn" type="submit">Submit</button>
+        <div class="auth-error" id="resetError"></div>
+        <div class="auth-ok" id="resetOk"></div>
+      </form>
+      <div class="auth-links"><a href="#" data-auth="login">Back to sign in</a></div>
+    </div>
+  </div>
+
+  <div class="app" id="appShell" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img class="brand-logo-img" src="https://credlockng.com/brand/credlock-logo.png" alt="Credlock" style="filter: brightness(0) invert(1);" />
+        <div>
+          <div class="brand-name">Tech Support</div>
+          <div class="brand-sub">Operations portal</div>
+        </div>
+      </div>
+      <div class="backend-status" id="backendStatus">
+        <span class="status-dot offline" id="statusDot"></span>
+        <span id="statusText">Local mode</span>
+      </div>
+      <nav class="nav">
+        <div class="nav-section">Operations</div>
+        <button class="nav-item" data-view="lead-dash" id="navLeadDash" hidden><span class="nav-icon">&#9670;</span> Lead Dashboard</button>
+        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">&#9635;</span> Dashboard</button>
+        <button class="nav-item" data-view="tickets"><span class="nav-icon">&#9776;</span> Tickets <span class="nav-badge" id="navOpenCount">0</span></button>
+        <button class="nav-item" data-view="kavro"><span class="nav-icon">&#128241;</span> Kavro Issues <span class="nav-badge" id="navKavroCount">0</span></button>
+        <button class="nav-item" data-view="new-ticket"><span class="nav-icon">+</span> New Ticket</button>
+        <button class="nav-item" data-view="rota"><span class="nav-icon">&#9681;</span> Coverage Rota</button>
+        <div class="nav-section">Reports</div>
+        <button class="nav-item" data-view="daily"><span class="nav-icon">&#9680;</span> Daily</button>
+        <button class="nav-item" data-view="weekly"><span class="nav-icon">&#9638;</span> Weekly</button>
+        <button class="nav-item" data-view="monthly"><span class="nav-icon">&#9637;</span> Monthly</button>
+        <button class="nav-item" data-view="officer-reports"><span class="nav-icon">&#8681;</span> Officer Reports</button>
+        <button class="nav-item" data-view="analytics"><span class="nav-icon">&#9673;</span> Analytics</button>
+        <button class="nav-item" data-view="ai-insights"><span class="nav-icon">&#10022;</span> AI Insights</button>
+        <div class="nav-section">Team & Tools</div>
+        <button class="nav-item" data-view="team"><span class="nav-icon">&#9675;</span> Team</button>
+        <button class="nav-item" data-view="templates"><span class="nav-icon">&#9993;</span> Templates</button>
+        <button class="nav-item" data-view="notifications"><span class="nav-icon">&#128276;</span> Notifications</button>
+        <button class="nav-item" data-view="approvals" id="navApprovals" hidden><span class="nav-icon">&#10003;</span> Approvals <span class="nav-badge" id="navPendingCount">0</span></button>
+        <button class="nav-item" data-view="my-work"><span class="nav-icon">&#9733;</span> My Work</button>
+        <button class="nav-item" data-view="admin" id="navAdmin" hidden><span class="nav-icon">&#9960;</span> Admin Panel</button>
+        <button class="nav-item" data-view="settings"><span class="nav-icon">&#9881;</span> Settings</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-bar" id="userBar">
+          <div class="user-avatar" id="userAvatar">?</div>
+          <div class="user-meta">
+            <div class="user-name" id="userName">—</div>
+            <div class="user-role" id="userRole">—</div>
+          </div>
+          <button class="btn btn-sm btn-ghost" id="btnLogout" title="Sign out">⏎</button>
+        </div>
+        <div class="version">Portal v3.1 · Credlock Africa</div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="reminder-bar" id="reminderBar"></div>
+      <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">&#9776;</button>
+        <div class="topbar-title" id="pageTitle">Dashboard</div>
+        <div class="topbar-actions">
+          <span class="live-clock" id="liveClock"></span>
+          <button class="btn btn-ghost" id="syncBtn" title="Sync with Google Sheet">&#8635; Sync</button>
+          <button class="btn btn-ghost" id="exportBtn" title="Export data">Export</button>
+          <button class="btn btn-primary" id="quickNewBtn">+ New Ticket</button>
+        </div>
+      </header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Modal</div>
+        <button class="btn btn-sm btn-ghost" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+  <div class="toast-stack" id="toastStack"></div>
+  <div id="toast" class="toast" style="display:none"></div>
+
+  <script src="config.js"></script>
+  <script src="auth.js"></script>
+  <script src="kavro_data.js"></script>
+  <script src="api.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
