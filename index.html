@@ -4,8 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Credlock Africa | Tech Support Portal</title>
-  <link rel="stylesheet" href="styles-part1.css" />
-  <link rel="stylesheet" href="styles-part2.css" />
+  <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
@@ -55,8 +54,8 @@
       <form class="auth-form" id="resetForm">
         <label>Email</label>
         <input name="email" type="email" required />
-        <label>Reset token (from Team Lead)</label>
-        <input name="token" placeholder="Optional on first request" />
+        <label>Reset token</label>
+        <input name="token" />
         <label>New PIN</label>
         <input name="pin" type="password" inputmode="numeric" />
         <label>Confirm PIN</label>
@@ -71,11 +70,8 @@
   <div class="app" id="appShell" hidden>
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <img class="brand-logo-img" src="https://credlockng.com/brand/credlock-logo.png" alt="Credlock" style="filter: brightness(0) invert(1);" />
-        <div>
-          <div class="brand-name">Tech Support</div>
-          <div class="brand-sub">Operations portal</div>
-        </div>
+        <img class="brand-logo-img" src="https://credlockng.com/brand/credlock-logo.png" alt="Credlock" style="filter:brightness(0) invert(1)" />
+        <div><div class="brand-name">Tech Support</div><div class="brand-sub">Operations portal</div></div>
       </div>
       <div class="backend-status" id="backendStatus">
         <span class="status-dot offline" id="statusDot"></span>
@@ -112,7 +108,7 @@
             <div class="user-name" id="userName">-</div>
             <div class="user-role" id="userRole">-</div>
           </div>
-          <button class="btn btn-sm btn-ghost" id="btnLogout" title="Sign out">Out</button>
+          <button class="btn btn-sm btn-ghost" id="btnLogout">Out</button>
         </div>
         <div class="version">Portal v3.1</div>
       </div>
@@ -120,7 +116,7 @@
     <main class="main">
       <div class="reminder-bar" id="reminderBar"></div>
       <header class="topbar">
-        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">&#9776;</button>
+        <button class="menu-toggle" id="menuToggle">&#9776;</button>
         <div class="topbar-title" id="pageTitle">Dashboard</div>
         <div class="topbar-actions">
           <span class="live-clock" id="liveClock"></span>
@@ -135,10 +131,8 @@
   <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title" id="modalTitle">Modal</div>
-        <button class="btn btn-sm btn-ghost" onclick="closeModal()">X</button>
-      </div>
+      <div class="modal-header"><div class="modal-title" id="modalTitle">Modal</div>
+        <button class="btn btn-sm btn-ghost" onclick="closeModal()">X</button></div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer" id="modalFooter"></div>
     </div>
@@ -148,8 +142,6 @@
   <script src="auth.js"></script>
   <script src="kavro_data.js"></script>
   <script src="api.js"></script>
-  <script src="app-part1.js"></script>
-  <script src="app-part2.js"></script>
-  <script src="app-part3.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
