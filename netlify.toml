@@ -1,0 +1,33 @@
+# Credlock Tech Support Portal – Netlify
+[build]
+  publish = "."
+  # Static site: no build command required
+  command = "echo 'Static portal – no build step'"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
+# SPA-style fallback (optional; portal is multi-view via JS)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Role = ["admin"]}
+
+# Simpler: only 404s go to index (comment out Role condition if unused)
+# Netlify serves index.html for / automatically for static sites.
