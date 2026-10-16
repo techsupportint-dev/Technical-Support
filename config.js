@@ -3,9 +3,10 @@ window.PORTAL_CONFIG = {
   SCRIPT_ID: '1eTJ-qH8ef1MmQIW0mgHiKzXqDPqSgcGnKrQyuS94cTGP8X5oytVIIzt-',
   SHEET_URL: 'https://docs.google.com/spreadsheets/d/1qOySvKFNS5kkMGjHoyr51-qJJ3bQavTzk83k5owZbIo/edit',
   SHEET_ID: '1qOySvKFNS5kkMGjHoyr51-qJJ3bQavTzk83k5owZbIo',
+  ACTIVE_GID: '1897292796',
   APP_NAME: 'Credlock Africa',
   APP_SUB: 'Tech Support Portal',
-  VERSION: '3.1',
+  VERSION: '3.2',
   TEAM_LEAD: 'Joseph Olayemi',
   TEAM_LEAD_EMAIL: 'techsupport.int@gmail.com'
 };
