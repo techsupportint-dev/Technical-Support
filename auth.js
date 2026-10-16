@@ -101,12 +101,13 @@
   function pendingUsers() { return loadUsers().filter(function (u) { return u.status === 'pending'; }); }
 
   function register(opts) {
+    ensureSeed();
     var email = (opts.email || '').trim().toLowerCase();
     var name = (opts.name || '').trim();
     var pin = String(opts.pin || '').trim();
     var role = opts.role === 'lead' || opts.role === 'admin' ? opts.role : 'officer';
     if (!name || !email || !pin) throw new Error('All fields required');
-    if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN must be 4–6 digits');
+    if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN must be 4-6 digits');
     var users = loadUsers();
     if (users.find(function (u) { return u.email === email; })) throw new Error('Email already registered');
     users.push({
@@ -119,6 +120,7 @@
   }
 
   function login(email, pin) {
+    ensureSeed();
     email = (email || '').trim().toLowerCase();
     pin = String(pin || '').trim();
     var user = loadUsers().find(function (u) { return u.email === email; });
@@ -158,7 +160,7 @@
       if (!patch.permissions) u.permissions = defaultPerms(patch.role === 'lead' || patch.role === 'admin' ? 'lead' : patch.role);
     }
     if (patch.pin) {
-      if (!/^\d{4,6}$/.test(String(patch.pin))) throw new Error('PIN must be 4–6 digits');
+      if (!/^\d{4,6}$/.test(String(patch.pin))) throw new Error('PIN must be 4-6 digits');
       u.pin = String(patch.pin);
     }
     if (patch.status) u.status = patch.status;
@@ -171,6 +173,7 @@
   function setUserPermissions(userId, perms) { return updateUser(userId, { permissions: perms }); }
 
   function requestOrResetPin(opts) {
+    ensureSeed();
     var email = (opts.email || '').trim().toLowerCase();
     var pin = String(opts.pin || '').trim();
     var token = opts.token;
@@ -182,12 +185,12 @@
       var t = 'RST-' + Math.random().toString(36).slice(2, 10).toUpperCase();
       resets.push({ email: email, token: t, createdAt: new Date().toISOString(), used: false });
       saveResets(resets);
-      return { message: 'Reset requested. Team Lead will give you a token.' };
+      return { message: 'Reset requested. Ask Team Lead for token, then submit again with token + new PIN.' };
     }
     var resets2 = loadResets();
     var req = resets2.find(function (r) { return r.email === email && r.token === token && !r.used; });
     if (!req) throw new Error('Invalid or used reset token');
-    if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN must be 4–6 digits');
+    if (!/^\d{4,6}$/.test(pin)) throw new Error('PIN must be 4-6 digits');
     user.pin = pin; req.used = true;
     saveUsers(users); saveResets(resets2);
     return { message: 'PIN updated. You can sign in.' };
@@ -215,8 +218,20 @@
   function showAuth(show) {
     var auth = document.getElementById('authShell');
     var app = document.getElementById('appShell');
-    if (auth) auth.style.display = show ? 'flex' : 'none';
-    if (app) { if (show) app.setAttribute('hidden', ''); else app.removeAttribute('hidden'); }
+    if (auth) {
+      auth.style.display = show ? 'flex' : 'none';
+      auth.classList.toggle('is-visible', !!show);
+    }
+    if (app) {
+      if (show) {
+        app.setAttribute('hidden', '');
+        app.style.display = 'none';
+      } else {
+        app.removeAttribute('hidden');
+        app.style.display = '';
+      }
+    }
+    document.body.classList.toggle('auth-open', !!show);
   }
   function applyNavPermissions() {
     var s = getSession();
@@ -252,6 +267,8 @@
   }
 
   function bindAuthForms() {
+    if (window.__credlockFormsBound) return;
+    window.__credlockFormsBound = true;
     document.querySelectorAll('[data-auth]').forEach(function (a) {
       a.addEventListener('click', function (e) {
         e.preventDefault();
@@ -335,6 +352,22 @@
     updateUser: updateUser, setUserPermissions: setUserPermissions, pendingUsers: pendingUsers,
     loadUsers: loadUsers, issueResetToken: issueResetToken, openResets: openResets,
     updateUserBar: updateUserBar, applyNavPermissions: applyNavPermissions, showAuth: showAuth,
-    getSession: getSession, ALL_PERMS: ALL_PERMS, ROLE_PRESETS: ROLE_PRESETS, defaultPerms: defaultPerms
+    getSession: getSession, ALL_PERMS: ALL_PERMS, ROLE_PRESETS: ROLE_PRESETS, defaultPerms: defaultPerms,
+    ensureSeed: ensureSeed
   };
+
+  function autoAuthInit() {
+    try {
+      ensureSeed();
+      bindAuthForms();
+      window.__credlockAuthReady = true;
+    } catch (e) {
+      console.error('Auth init error', e);
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoAuthInit);
+  } else {
+    autoAuthInit();
+  }
 })(window);
