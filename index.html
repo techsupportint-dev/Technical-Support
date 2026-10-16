@@ -95,6 +95,7 @@
         <button class="nav-item" data-view="weekly"><span class="nav-icon">&#9638;</span> Weekly</button>
         <button class="nav-item" data-view="monthly"><span class="nav-icon">&#9637;</span> Monthly</button>
         <button class="nav-item" data-view="officer-reports"><span class="nav-icon">&#8681;</span> Officer Reports</button>
+        <button class="nav-item" data-view="monthly-reports"><span class="nav-icon">&#128197;</span> Monthly Reports</button>
         <button class="nav-item" data-view="analytics"><span class="nav-icon">&#9673;</span> Analytics</button>
         <button class="nav-item" data-view="ai-insights"><span class="nav-icon">&#10022;</span> AI Insights</button>
         <div class="nav-section">Team & Tools</div>
@@ -115,7 +116,7 @@
           </div>
           <button class="btn btn-sm btn-ghost" id="btnLogout">Out</button>
         </div>
-        <div class="version">Portal v3.1</div>
+        <div class="version">Portal v3.2</div>
       </div>
     </aside>
     <main class="main">
@@ -150,14 +151,11 @@
   <script src="kavro_data.js"></script>
   <script src="api.js"></script>
   <script>
-  /* Safety stubs so app.js never crashes on missing nodes */
   (function () {
     ['menuToggle','quickNewBtn','modalClose','modalBackdrop','exportBtn','syncBtn'].forEach(function (id) {
       if (!document.getElementById(id)) {
         var el = document.createElement('button');
-        el.id = id;
-        el.type = 'button';
-        el.style.display = 'none';
+        el.id = id; el.type = 'button'; el.style.display = 'none';
         document.body.appendChild(el);
       }
     });
