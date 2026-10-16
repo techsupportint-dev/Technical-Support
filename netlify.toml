@@ -1,8 +1,10 @@
-# Credlock Tech Support Portal – Netlify
+# Credlock Tech Support Portal – Netlify static site
 [build]
   publish = "."
-  # Static site: no build command required
-  command = "echo 'Static portal – no build step'"
+  command = "true"
+
+# Do not use a catch-all redirect that hides missing assets.
+# index.html is at repo root and must be published as-is.
 
 [[headers]]
   for = "/*"
@@ -14,20 +16,9 @@
 [[headers]]
   for = "/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=300"
+    Cache-Control = "public, max-age=60"
 
 [[headers]]
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=300"
-
-# SPA-style fallback (optional; portal is multi-view via JS)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
-  conditions = {Role = ["admin"]}
-
-# Simpler: only 404s go to index (comment out Role condition if unused)
-# Netlify serves index.html for / automatically for static sites.
+    Cache-Control = "public, max-age=60"
