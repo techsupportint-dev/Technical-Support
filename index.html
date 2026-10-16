@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Credlock Africa | Tech Support Portal</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles-part1.css" />
+  <link rel="stylesheet" href="styles-part2.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body>
@@ -19,7 +20,7 @@
         <label>Email</label>
         <input name="email" type="email" required placeholder="you@credlock.africa" autocomplete="username" />
         <label>PIN</label>
-        <input name="pin" type="password" inputmode="numeric" required placeholder="4–6 digit PIN" autocomplete="current-password" />
+        <input name="pin" type="password" inputmode="numeric" required placeholder="4-6 digit PIN" autocomplete="current-password" />
         <button class="btn btn-primary auth-btn" type="submit">Sign in</button>
         <div class="auth-error" id="loginError"></div>
       </form>
@@ -38,7 +39,7 @@
         <input name="email" type="email" required />
         <label>Role</label>
         <select name="role"><option value="officer">Support Officer</option><option value="viewer">Viewer</option></select>
-        <label>PIN (4–6 digits)</label>
+        <label>PIN (4-6 digits)</label>
         <input name="pin" type="password" inputmode="numeric" required />
         <label>Confirm PIN</label>
         <input name="pin2" type="password" inputmode="numeric" required />
@@ -67,7 +68,6 @@
       <div class="auth-links"><a href="#" data-auth="login">Back to sign in</a></div>
     </div>
   </div>
-
   <div class="app" id="appShell" hidden>
     <aside class="sidebar" id="sidebar">
       <div class="brand">
@@ -96,7 +96,7 @@
         <button class="nav-item" data-view="officer-reports"><span class="nav-icon">&#8681;</span> Officer Reports</button>
         <button class="nav-item" data-view="analytics"><span class="nav-icon">&#9673;</span> Analytics</button>
         <button class="nav-item" data-view="ai-insights"><span class="nav-icon">&#10022;</span> AI Insights</button>
-        <div class="nav-section">Team & Tools</div>
+        <div class="nav-section">Team &amp; Tools</div>
         <button class="nav-item" data-view="team"><span class="nav-icon">&#9675;</span> Team</button>
         <button class="nav-item" data-view="templates"><span class="nav-icon">&#9993;</span> Templates</button>
         <button class="nav-item" data-view="notifications"><span class="nav-icon">&#128276;</span> Notifications</button>
@@ -109,12 +109,12 @@
         <div class="user-bar" id="userBar">
           <div class="user-avatar" id="userAvatar">?</div>
           <div class="user-meta">
-            <div class="user-name" id="userName">—</div>
-            <div class="user-role" id="userRole">—</div>
+            <div class="user-name" id="userName">-</div>
+            <div class="user-role" id="userRole">-</div>
           </div>
-          <button class="btn btn-sm btn-ghost" id="btnLogout" title="Sign out">⏎</button>
+          <button class="btn btn-sm btn-ghost" id="btnLogout" title="Sign out">Out</button>
         </div>
-        <div class="version">Portal v3.1 · Credlock Africa</div>
+        <div class="version">Portal v3.1</div>
       </div>
     </aside>
     <main class="main">
@@ -124,33 +124,32 @@
         <div class="topbar-title" id="pageTitle">Dashboard</div>
         <div class="topbar-actions">
           <span class="live-clock" id="liveClock"></span>
-          <button class="btn btn-ghost" id="syncBtn" title="Sync with Google Sheet">&#8635; Sync</button>
-          <button class="btn btn-ghost" id="exportBtn" title="Export data">Export</button>
+          <button class="btn btn-ghost" id="syncBtn">Sync</button>
+          <button class="btn btn-ghost" id="exportBtn">Export</button>
           <button class="btn btn-primary" id="quickNewBtn">+ New Ticket</button>
         </div>
       </header>
       <div class="content" id="content"></div>
     </main>
   </div>
-
   <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
   <div class="modal-backdrop" id="modalBackdrop">
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title" id="modalTitle">Modal</div>
-        <button class="btn btn-sm btn-ghost" onclick="closeModal()">×</button>
+        <button class="btn btn-sm btn-ghost" onclick="closeModal()">X</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer" id="modalFooter"></div>
     </div>
   </div>
   <div class="toast-stack" id="toastStack"></div>
-  <div id="toast" class="toast" style="display:none"></div>
-
   <script src="config.js"></script>
   <script src="auth.js"></script>
   <script src="kavro_data.js"></script>
   <script src="api.js"></script>
-  <script src="app.js"></script>
+  <script src="app-part1.js"></script>
+  <script src="app-part2.js"></script>
+  <script src="app-part3.js"></script>
 </body>
 </html>
