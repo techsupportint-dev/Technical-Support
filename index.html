@@ -89,7 +89,7 @@
       </div>
       <div class="backend-status" id="backendStatus">
         <span class="status-dot offline" id="statusDot"></span>
-        <span id="statusText">Local mode</span>
+        <span id="statusText">Starting…</span>
       </div>
       <nav class="nav">
         <div class="nav-section">Operations</div>
@@ -125,7 +125,7 @@
           </div>
           <button class="btn btn-sm btn-ghost" id="btnLogout">Out</button>
         </div>
-        <div class="version">Portal v3.4</div>
+        <div class="version">Portal v4.0 offline</div>
       </div>
     </aside>
     <main class="main">
@@ -163,6 +163,8 @@
   <script src="tickets_a.js"></script>
   <script src="tickets_b.js"></script>
   <script src="api.js"></script>
+  <script src="offline-db.js"></script>
+  <script src="api-bridge.js"></script>
   <script>
   (function () {
     ['menuToggle','quickNewBtn','modalClose','modalBackdrop','exportBtn','syncBtn'].forEach(function (id) {
