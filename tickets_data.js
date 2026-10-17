@@ -1,2 +1,2 @@
-/** Tickets loaded from tickets_a.js + tickets_b.js */
+/** No seed tickets — data comes from Google Sheet via Sync only */
 window.TICKETS_DATA = window.TICKETS_DATA || [];

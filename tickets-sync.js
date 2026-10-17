@@ -1,8 +1,11 @@
 /**
- * Tickets seed + Google Sheet live sync
+ * Tickets: clear local seed; load only from Google Sheet when API is live
  */
 (function () {
   'use strict';
+
+  var STORAGE_KEY = 'credlock_ts_tickets_v1';
+  var CLEARED_FLAG = 'credlock_ts_tickets_cleared_v1';
 
   function normalizeTicket(t) {
     if (!t) return null;
@@ -32,22 +35,13 @@
     };
   }
 
-  function seedTicketsFromBundle(force) {
-    var seed = (window.TICKETS_DATA || []).map(normalizeTicket).filter(function (t) { return t && t.id; });
-    if (!seed.length) return 0;
-    var key = 'credlock_ts_tickets_v1';
+  function clearLocalTicketsOnce() {
     try {
-      var raw = localStorage.getItem(key);
-      var local = raw ? JSON.parse(raw) : [];
-      if (force || !local || !local.length || local.length < Math.min(10, seed.length)) {
-        localStorage.setItem(key, JSON.stringify(seed));
-        return seed.length;
-      }
-      return local.length;
-    } catch (e) {
-      localStorage.setItem(key, JSON.stringify(seed));
-      return seed.length;
-    }
+      if (localStorage.getItem(CLEARED_FLAG) === '1') return;
+      localStorage.setItem(STORAGE_KEY, '[]');
+      localStorage.setItem(CLEARED_FLAG, '1');
+      console.log('[Credlock] Local tickets cleared (no seed data)');
+    } catch (e) {}
   }
 
   function setBackendStatus(ok, msg) {
@@ -57,17 +51,19 @@
     if (statusText) statusText.textContent = msg;
   }
 
-  window.__credlockReloadTickets = function () {
-    var n = seedTicketsFromBundle(true);
-    if (typeof toastSuccess === 'function') toastSuccess('Loaded ' + n + ' tickets — reloading…', 'Tickets');
+  window.__credlockClearTickets = function () {
+    try {
+      localStorage.setItem(STORAGE_KEY, '[]');
+      localStorage.setItem(CLEARED_FLAG, '1');
+    } catch (e) {}
+    if (typeof toastSuccess === 'function') toastSuccess('Tickets cleared', 'Tickets');
     location.reload();
   };
 
   window.__credlockLiveSync = async function () {
     if (!window.TSApi || !TSApi.getApiUrl || !TSApi.getApiUrl()) {
-      setBackendStatus(false, 'Local mode');
-      var n = seedTicketsFromBundle(false);
-      if (typeof toast === 'function') toast('Using local tickets (' + (n || (window.TICKETS_DATA || []).length) + '). Connect API in Settings for live Sheet.', 'info');
+      setBackendStatus(false, 'Local mode · 0 tickets');
+      if (typeof toast === 'function') toast('No live API — tickets stay empty until Sheet is connected.', 'info');
       return { ok: false, local: true };
     }
     try {
@@ -75,27 +71,20 @@
       var ping = await TSApi.ping();
       if (!ping || !ping.ok) {
         setBackendStatus(false, 'Sheet offline');
-        seedTicketsFromBundle(false);
-        if (typeof toastError === 'function') toastError((ping && ping.error) || 'API offline — using local tickets', 'Sheet');
+        if (typeof toastError === 'function') toastError((ping && ping.error) || 'API offline', 'Sheet');
         return { ok: false };
       }
       setBackendStatus(true, 'Sheets live');
       var remote = await TSApi.listTickets();
-      if (remote && remote.length) {
-        var mapped = remote.map(normalizeTicket).filter(function (t) { return t && t.id; });
-        localStorage.setItem('credlock_ts_tickets_v1', JSON.stringify(mapped));
-        if (typeof toastSuccess === 'function') toastSuccess('Live: ' + mapped.length + ' tickets from Google Sheet ✅', 'Sync');
-        sessionStorage.setItem('tickets_synced_once', '1');
-        location.reload();
-        return { ok: true, count: mapped.length };
+      var mapped = (remote || []).map(normalizeTicket).filter(function (t) { return t && t.id; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped));
+      if (typeof toastSuccess === 'function') {
+        toastSuccess('Synced ' + mapped.length + ' ticket(s) from Google Sheet ✅', 'Sync');
       }
-      seedTicketsFromBundle(true);
-      if (typeof toastSuccess === 'function') toastSuccess('Sheet connected (no remote tickets) — seeded local data', 'Sync');
       location.reload();
-      return { ok: true, count: 0 };
+      return { ok: true, count: mapped.length };
     } catch (e) {
       setBackendStatus(false, 'Sheet offline');
-      seedTicketsFromBundle(false);
       if (typeof toastError === 'function') toastError(String(e.message || e), 'Sheet');
       return { ok: false };
     }
@@ -116,19 +105,17 @@
   }, true);
 
   function boot() {
-    var n = seedTicketsFromBundle(false);
-    console.log('[Credlock tickets] seed', (window.TICKETS_DATA || []).length, 'stored', n);
+    clearLocalTicketsOnce();
+    setBackendStatus(false, 'Local · 0 tickets');
     if (window.TSApi && TSApi.getApiUrl && TSApi.getApiUrl() && !sessionStorage.getItem('auto_sync_done')) {
       sessionStorage.setItem('auto_sync_done', '1');
-      setTimeout(function () { window.__credlockLiveSync(); }, 1500);
-    } else {
-      setBackendStatus(false, n ? ('Local · ' + n + ' tickets') : 'Local mode');
+      setTimeout(function () { window.__credlockLiveSync(); }, 1200);
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 300); });
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 200); });
   } else {
-    setTimeout(boot, 300);
+    setTimeout(boot, 200);
   }
 })();
