@@ -1,46 +1,43 @@
-# Credlock Tech Support Portal — Team access
+# Credlock Tech Support — Team access
 
-## Share this link with the team
+## Share this link only
 
-**https://credlock-tech-support.netlify.app/**
+**https://techsupportint-dev.github.io/Technical-Support/**
 
-That is the only link they need. No install, no Google Sheet access required.
-
----
-
-## Sign in (Team Lead)
-
-| Field | Value |
-|--------|--------|
-| Email | `techsupport.int@gmail.com` |
-| PIN | `6424` |
-
-## Officers
-
-1. Open the link  
-2. Click **Register**  
-3. Enter name, email, PIN  
-4. Team Lead signs in → **Approvals** → Approve  
-5. Officer signs in with their email + PIN  
+Hosted on **GitHub Pages** (free). No Netlify.
 
 ---
 
-## Monthly reports
+## Sign in
 
-1. Sign in  
-2. Sidebar → **Monthly**  
-3. Choose the month  
-4. Edit summary, highlights, challenges, next actions  
-5. **Save report**  
-6. **Print / PDF** or **Download HTML** to share with management  
+**Team Lead**
+- Email: `techsupport.int@gmail.com`
+- PIN: `6424`
 
-Stats fill automatically from tickets created in the portal.
+**Officers**
+1. Open the link
+2. **Register** (name, email, 4–6 digit PIN)
+3. Team Lead → **Approvals** → Approve
+4. Officer signs in
 
 ---
 
-## Daily work
+## What is included
 
-- **New Ticket** — log every request  
-- **Tickets** — own, update status, resolve  
-- **Kavro Issues** — device records  
-- **Daily / Weekly / Monthly** — operational reports  
+| Area | Status |
+|------|--------|
+| Tickets | Empty until you create them |
+| Kavro Issues | Device records loaded |
+| Monthly report | Sidebar → **Monthly** |
+| Approvals | Team Lead only |
+
+---
+
+## First open tip
+
+If old tickets still appear, press **Ctrl+Shift+R**, or in the browser console:
+
+```js
+localStorage.removeItem('credlock_ts_tickets_v1');
+location.reload();
+```

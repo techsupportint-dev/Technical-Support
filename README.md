@@ -1,42 +1,31 @@
-# Credlock Africa – Tech Support Portal
+# Credlock Africa — Tech Support Portal
 
-Operations portal for the Technical Support team (tickets, Kavro, analytics, AI insights, admin).
-
-## Team link (GitHub Pages)
+## Team access (GitHub Pages)
 
 **https://techsupportint-dev.github.io/Technical-Support/**
 
-## Team Lead sign-in
+Send that link to officers. No Netlify required.
 
-| Field | Value |
-|-------|--------|
-| Email | `techsupport.int@gmail.com` |
-| PIN | `6424` |
+| Role | Email | PIN |
+|------|--------|-----|
+| Team Lead | `techsupport.int@gmail.com` | `6424` |
+| Officers | Register on the site → Team Lead approves under **Approvals** |
 
-Officers register in the portal → Team Lead approves under **Approvals** / **Admin**.
+## Data
 
-## Features
-
-- Tickets, Kavro issues, coverage rota
-- Daily / weekly / monthly reports
-- Officer activity exports (Excel / PDF / Word)
-- Performance analytics + charts
-- AI insights & SWOT per officer
-- Admin panel + permission matrix
-- Google Sheets backend (optional via Apps Script Web App URL in Settings)
-
-## Local run
-
-Open `index.html` in a browser, or serve the folder:
-
-```bash
-npx serve .
-```
-
-## Google Sheet
-
-https://docs.google.com/spreadsheets/d/1qOySvKFNS5kkMGjHoyr51-qJJ3bQavTzk83k5owZbIo/edit
+- **Tickets:** start empty (no seed). Create via **New Ticket**.
+- **Kavro devices:** loaded from `kavro_all.js` (retained).
+- Offline storage in the browser; optional Google Sheet / Apps Script API in Settings.
 
 ## Repo
 
 https://github.com/techsupportint-dev/Technical-Support
+
+## GitHub Pages setup (if link ever 404s)
+
+1. Repo → **Settings → Pages**
+2. Source: **Deploy from a branch**
+3. Branch: **main** / folder: **/ (root)**
+4. Save — wait 1–2 minutes
+
+`.nojekyll` is in the repo so all JS/CSS files are served correctly.

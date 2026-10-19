@@ -1,2 +1,2 @@
-/** No seed tickets — data comes from Google Sheet via Sync only */
-window.TICKETS_DATA = window.TICKETS_DATA || [];
+/** Tickets cleared — no seed data. Create tickets in the portal. */
+window.TICKETS_DATA = [];
