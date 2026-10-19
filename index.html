@@ -15,10 +15,8 @@
     .auth-hint { color:#64748b; font-size:13px; margin-bottom:20px; line-height:1.45; }
     .auth-form label { display:block; font-size:12px; font-weight:600; color:#334155; margin:12px 0 4px; }
     .auth-form input, .auth-form select { width:100%; padding:11px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px; box-sizing:border-box; }
-    .auth-form input:focus, .auth-form select:focus { outline:none; border-color:#3B5BDB; box-shadow:0 0 0 3px rgba(59,91,219,.15); }
     .auth-btn { width:100%; margin-top:18px; padding:12px; font-weight:600; }
     .brand-logo-img { height:40px; margin-bottom:12px; }
-    .nav-item[data-view="approvals"]:not([hidden]) { display:flex !important; }
   </style>
 </head>
 <body>
@@ -64,12 +62,11 @@
     </div>
     <div class="auth-card" id="authReset" hidden>
       <h1>Reset PIN</h1>
-      <p class="auth-hint">Submit email only first to request a token. Then enter token + new PIN.</p>
       <form class="auth-form" id="resetForm">
         <label>Email</label>
         <input name="email" type="email" required />
-        <label>Reset token (from Team Lead)</label>
-        <input name="token" placeholder="Leave blank to request" />
+        <label>Reset token</label>
+        <input name="token" />
         <label>New PIN</label>
         <input name="pin" type="password" inputmode="numeric" />
         <label>Confirm PIN</label>
@@ -93,28 +90,28 @@
       </div>
       <nav class="nav">
         <div class="nav-section">Operations</div>
-        <button class="nav-item" data-view="lead-dash" id="navLeadDash" hidden><span class="nav-icon">&#9670;</span> Lead Dashboard</button>
-        <button class="nav-item active" data-view="dashboard"><span class="nav-icon">&#9635;</span> Dashboard</button>
-        <button class="nav-item" data-view="tickets"><span class="nav-icon">&#9776;</span> Tickets <span class="nav-badge" id="navOpenCount">0</span></button>
-        <button class="nav-item" data-view="kavro"><span class="nav-icon">&#128241;</span> Kavro Issues <span class="nav-badge" id="navKavroCount">0</span></button>
-        <button class="nav-item" data-view="new-ticket"><span class="nav-icon">+</span> New Ticket</button>
-        <button class="nav-item" data-view="rota"><span class="nav-icon">&#9681;</span> Coverage Rota</button>
+        <button class="nav-item" data-view="lead-dash" id="navLeadDash" hidden>Lead Dashboard</button>
+        <button class="nav-item active" data-view="dashboard">Dashboard</button>
+        <button class="nav-item" data-view="tickets">Tickets <span class="nav-badge" id="navOpenCount">0</span></button>
+        <button class="nav-item" data-view="kavro">Kavro / Follow-up <span class="nav-badge" id="navKavroCount">0</span></button>
+        <button class="nav-item" data-view="new-ticket">+ New Ticket</button>
+        <button class="nav-item" data-view="rota">Coverage Rota</button>
         <div class="nav-section">Reports</div>
-        <button class="nav-item" data-view="daily"><span class="nav-icon">&#9680;</span> Daily</button>
-        <button class="nav-item" data-view="weekly"><span class="nav-icon">&#9638;</span> Weekly</button>
-        <button class="nav-item" data-view="monthly"><span class="nav-icon">&#9637;</span> Monthly</button>
-        <button class="nav-item" data-view="officer-reports"><span class="nav-icon">&#8681;</span> Officer Reports</button>
-        <button class="nav-item" data-view="monthly-reports"><span class="nav-icon">&#128197;</span> Monthly Reports</button>
-        <button class="nav-item" data-view="analytics"><span class="nav-icon">&#9673;</span> Analytics</button>
-        <button class="nav-item" data-view="ai-insights"><span class="nav-icon">&#10022;</span> AI Insights</button>
-        <div class="nav-section">Team & Tools</div>
-        <button class="nav-item" data-view="team"><span class="nav-icon">&#9675;</span> Team</button>
-        <button class="nav-item" data-view="templates"><span class="nav-icon">&#9993;</span> Templates</button>
-        <button class="nav-item" data-view="notifications"><span class="nav-icon">&#128276;</span> Notifications</button>
-        <button class="nav-item" data-view="approvals" id="navApprovals"><span class="nav-icon">&#10003;</span> Approvals <span class="nav-badge" id="navPendingCount">0</span></button>
-        <button class="nav-item" data-view="my-work"><span class="nav-icon">&#9733;</span> My Work</button>
-        <button class="nav-item" data-view="admin" id="navAdmin" hidden><span class="nav-icon">&#9960;</span> Admin Panel</button>
-        <button class="nav-item" data-view="settings"><span class="nav-icon">&#9881;</span> Settings</button>
+        <button class="nav-item" data-view="daily">Daily</button>
+        <button class="nav-item" data-view="weekly">Weekly</button>
+        <button class="nav-item" data-view="monthly">Monthly</button>
+        <button class="nav-item" data-view="officer-reports">Officer Reports</button>
+        <button class="nav-item" data-view="monthly-reports">Monthly Reports</button>
+        <button class="nav-item" data-view="analytics">Analytics</button>
+        <button class="nav-item" data-view="ai-insights">AI Insights</button>
+        <div class="nav-section">Team</div>
+        <button class="nav-item" data-view="team">Team</button>
+        <button class="nav-item" data-view="templates">Templates</button>
+        <button class="nav-item" data-view="notifications">Notifications</button>
+        <button class="nav-item" data-view="approvals" id="navApprovals">Approvals <span class="nav-badge" id="navPendingCount">0</span></button>
+        <button class="nav-item" data-view="my-work">My Work</button>
+        <button class="nav-item" data-view="admin" id="navAdmin" hidden>Admin Panel</button>
+        <button class="nav-item" data-view="settings">Settings</button>
       </nav>
       <div class="sidebar-footer">
         <div class="user-bar" id="userBar">
@@ -125,7 +122,7 @@
           </div>
           <button class="btn btn-sm btn-ghost" id="btnLogout">Out</button>
         </div>
-        <div class="version">Portal v4.1</div>
+        <div class="version">Portal v4.2 follow-up</div>
       </div>
     </aside>
     <main class="main">
@@ -148,7 +145,7 @@
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title" id="modalTitle">Modal</div>
-        <button class="btn btn-sm btn-ghost" id="modalClose" type="button" onclick="typeof closeModal==='function'&&closeModal()">&times;</button>
+        <button class="btn btn-sm btn-ghost" id="modalClose" type="button">&times;</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer" id="modalFooter"></div>
@@ -159,28 +156,33 @@
   <script src="auth.js"></script>
   <script src="kavro_data.js"></script>
   <script src="kavro_all.js"></script>
+  <script src="followup_data.js"></script>
   <script src="tickets_data.js"></script>
   <script src="tickets_a.js"></script>
   <script src="tickets_b.js"></script>
   <script src="api.js"></script>
   <script src="offline-db.js"></script>
   <script src="api-bridge.js"></script>
-  <script>
-  (function () {
-    ['menuToggle','quickNewBtn','modalClose','modalBackdrop','exportBtn','syncBtn'].forEach(function (id) {
-      if (!document.getElementById(id)) {
-        var el = document.createElement('button');
-        el.id = id; el.type = 'button'; el.style.display = 'none';
-        document.body.appendChild(el);
-      }
-    });
-  })();
-  </script>
   <script src="app.js"></script>
   <script src="app-extensions.js"></script>
   <script src="portal-repair.js"></script>
   <script src="tickets-sync.js"></script>
   <script src="monthly-builder.js"></script>
   <script src="portal-fixes.js"></script>
+  <script>
+  (function () {
+    if (window.FOLLOWUP_DATA && window.FOLLOWUP_DATA.length) {
+      window.KAVRO_DATA = window.FOLLOWUP_DATA.map(function (r) {
+        return {
+          IMEI: r.imei, ID: r.id, Customer: r.fullName, Phone: r.phone, Email: r.email,
+          Brand: r.deviceBrand, Model: r.deviceModel, Status: r.lockStatus,
+          AssignedTo: r.assignedTo, DaysOverdue: r.daysOverdue, Outstanding: r.outstanding,
+          Bucket: r.recoveryBucket, State: r.state, City: r.city, Serial: r.serial,
+          FollowUpStatus: r.followUpStatus || 'Open', Source: r.source
+        };
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
